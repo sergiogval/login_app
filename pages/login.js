@@ -1,37 +1,51 @@
-import { useState } from 'react';
-import axios from 'axios';
+import axios from "axios";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
-const loginPage = () => {
-
+function Home() {
   const [credentials, setCredentials] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
-
-  const handleChange = (e) => {
-    setCredentials({
-      ...credentials,
-      [e.target.name]: e.target.value
-    });
-  }
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(credentials);
-    const response = await axios.post('/api/auth/login', credentials)
-    console.log(response)
-  }
+    const res = await axios.post("/api/auth/login", credentials);
+    console.log(res);
+
+    if (res.status === 200) {
+      router.push("/dashboard");
+    }
+  };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input name='email' type='email' placeholder='Email' onChange={handleChange} />
-        <input name='password' type='password' placeholder='password' onChange={handleChange} />
-        <button>Login</button>
-
+        <input
+          type="email"
+          placeholder="email"
+          onChange={(e) =>
+            setCredentials({
+              ...credentials,
+              email: e.target.value,
+            })
+          }
+        />
+        <input
+          type="password"
+          placeholder="password"
+          onChange={(e) =>
+            setCredentials({
+              ...credentials,
+              password: e.target.value,
+            })
+          }
+        />
+        <button>Save</button>
       </form>
     </div>
-  )
+  );
 }
 
-export default loginPage
+export default Home;
